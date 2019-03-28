@@ -1,0 +1,38 @@
+/*
+* An ArrayDeque that can add elements to the front or back end.
+*/
+
+#include<stdio.h> /*for printf and scanf*/
+#include<stdlib.h> /*standard library*/
+#
+
+#define DEFAULT_CAPACITY 10
+#define GROW_FACTOR 2
+
+void addFront(int size, int *arr, int e) {
+     int i = 0;
+     int *end = arr + size - 1;
+     /* ensureCapacity(size); */
+     printf("%p", (int *) &end);
+     for (i = size - 1; i >= 0; i--) {
+	 *(++end) = *end;
+	 printf("%p", (int *) &end);
+     }
+}
+
+void ensureCapacity(int size, int *arr) {
+}
+
+int main() {
+    int *arr = (int *)calloc(DEFAULT_CAPACITY, sizeof(int));
+    if (arr == NULL) {
+       fprintf(stderr, "Out of memory!");
+       exit(1);
+    }
+    int size = DEFAULT_CAPACITY;
+    addFront(size, arr, 0);
+    return 0;
+}
+
+
+

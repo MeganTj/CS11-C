@@ -1,0 +1,126 @@
+/*
+ * Creates a one-dimensional cellular automaton. Consists of a collection of 
+ * cells that can hold data values all arranged in a line. Each cell's value
+ * at the next time interval depends on the current value as well as the 
+ * value of its two immediate neighbors. Each cell can either be full or 
+ * empty, represented by 1 and 0 respectively.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "memcheck.h"
+
+void ca_print(int size, int arr[])
+{
+  int *num;
+  int i;
+  num = arr;
+  for (i = 0; i < size; i++)
+  {
+    if (*num == 1)
+    {
+      printf("*");
+    }
+    else
+    {
+      printf(".");
+    }
+    num++;
+  }
+  printf("\n");
+}
+
+
+/* Updates the CA based on the following update rule: if the current cell is
+ * empty and one of the two adjacent cells is full (but not both), set the 
+ * current cell to be full; otherwise, set the current cell to be empty.
+ */
+void update(int rep, int size, int arr[])
+{
+  int *prev_gen;
+  int *next_gen;
+  int *prev;
+  int *current;
+  int *next;
+  int *pos;
+  int index;
+  int i;
+  prev_gen = arr;
+  next_gen = (int *)calloc(size, sizeof(int));
+  if (prev_gen == NULL)
+  {
+    fprintf(stderr, "Error! Memory allocation failed!\n");
+    exit(1);
+  }
+  if (next_gen == NULL)
+  {
+    fprintf(stderr, "Error! Memory allocation failed!\n");
+    exit(1);
+  }
+  ca_print(size, prev_gen);
+  for (index = 0; index < rep; index++)
+  {
+    prev = prev_gen;
+    current = prev_gen + 1;
+    next = prev_gen + 2;
+    pos = next_gen;
+    *pos = 0;
+    pos++;
+    for (i = 1; i < size - 1; i++)
+    {
+      if (*current == 0 && *prev + *next == 1)
+      {
+        *pos = 1;
+      }
+      else
+      {
+        *pos = 0;
+      }
+      prev++;
+      current++;
+      next++;
+      pos++;
+    }
+    *pos = 0;
+    ca_print(size, next_gen);
+    /* Copies the contents of next_gen to prev_gen. */
+    current = next_gen;
+    prev = prev_gen;
+    for (i = 0; i < size; i++)
+    {
+      *prev = *current;
+      prev++;
+      current++;
+    }
+  }
+  free(prev_gen);
+  free(next_gen);
+}
+
+int main(int argc, char *argv[])
+{
+  int num_cell;
+  int num_gen;
+  int *arr;
+  int *pos;
+  int i;
+  srand(time(0));
+  if (argc == 1)
+  {
+    fprintf(stderr, "Two command-line arguments required.\n");
+    exit(1);
+  }
+  num_cell = atoi(argv[1]);
+  num_gen = atoi(argv[2]);
+  arr = (int *)calloc(num_cell, sizeof(int));
+  pos = arr;
+  for (i = 0; i < num_cell; i++)
+  {
+    *pos = rand() % 2;
+     pos++;
+  }
+  update(num_gen - 1, num_cell, arr);
+  print_memory_leaks();
+  return 0;
+}

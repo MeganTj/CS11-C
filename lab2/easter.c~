@@ -1,0 +1,81 @@
+#include <stdio.h>
+
+/*
+ *   STEP E1: Set G to (Y mod 19) + 1.
+ *            [G is the "golden year" in the 19-year Metonic cycle.]
+ *   STEP E2: Set C to (Y / 100) + 1. [C is the century]
+ *   STEP E3: Set X to (3C / 4) - 12. [X is the skipped leap years.]
+ *           Set Z to ((8C + 5) / 25) - 5.
+ *           [Z is a correction factor for the moon's orbit.]
+ *   STEP E4: Set D to (5Y / 4) - X - 10.
+ *           [March ((-D) mod 7 + 7) is a Sunday.]
+ *   STEP E5: Set E to (11G + 20 + Z - X) mod 30.
+ *            If E is 25 and G is greater than 11 or if E is 24,
+ *            increment E.
+ *            [E is the "epact" which specifies when a full moon occurs.]
+ *   STEP E6: Set N to 44 - E.  [March N is a "calendar full moon".]
+ *            If N is less than 21 then add 30 to N.
+ *   STEP E7: Set N to N + 7 - ((D + N) mod 7).
+ *            [N is a Sunday after full moon.]
+ *   STEP E8: If N > 31 the date is APRIL (N - 31),
+ *            otherwise the date is MARCH N.
+ */
+
+int calculate_Easter_date(int year)
+{
+  int golden = year % 19 + 1;
+  int century = year / 100 + 1;
+  int skipped = 3 * century / 4 - 12;
+  int correction = (8 * century + 5) / 25 - 5;
+  int day = 5 * year / 4 - skipped - 10;
+  int epact = (11 * golden + 20 + correction - skipped) % 30;
+  int day_march;
+  if (year < 1582 || year > 39999)
+  {
+    return 0;
+  }
+  if ((epact == 25 && golden > 11) || epact == 24)
+  {
+    epact++;
+  }
+  day_march = 44 - epact;
+  if (day_march < 21)
+  {
+    day_march += 30;
+  }
+  day_march = day_march + 7 - ((day + day_march) % 7);
+  if (day_march > 31)
+  {
+    return day_march - 31;
+  }
+  else
+  {
+    return -day_march;
+  }
+}
+
+int main(void)
+{
+  int year;
+  while (1)
+  {
+    scanf("%d", &year);
+    if (year == EOF)
+    {
+      break;
+    }      
+    date = calculate_Easter_year(year);
+    if (date == 0)
+    {
+      fprintf(stderr, "Input year is outside of range.");
+    }
+    else if (date < 0)
+    {
+      printf("March " + abs(date) + "\n");
+    }
+    else
+    {
+      printf("April  " + abs(date) + "\n");
+    }
+  }
+}

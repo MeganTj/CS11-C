@@ -1,0 +1,28 @@
+/*
+ * Creates a one-dimensional cellular automaton. Consists of a collection of 
+ * cells that can hold data values all arranged in a line. Each cell's value
+ * at the next time interval depends on the current value as well as the 
+ * value of its two immediate neighbors. Each cell can either be full or 
+ * empty, represented by 1 and 0 respectively.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/* Updates the CA based on the following update rule: if the current cell is
+ * empty and one of the two adjacent cells is full (but not both), set the 
+ * current cell to be full; otherwise, set the current cell to be empty.
+ */
+void update(int size, int arr[])
+{
+  int *prev = (int *)calloc(size, sizeof(int));
+  int *prev, *current, *next;
+  int prev = arr;
+  int current = arr + 1;
+  int next = arr + 2;
+  int i;
+  for (i = 1; i < size - 1; i++)
+  {
+    int *
+  }
+}
